@@ -1116,8 +1116,9 @@ var _ = Describe("MySQL", func() {
 
 			// To run this test,
 			// 1st: Deploy stash latest operator
-			// 2nd: create mysql related tasks and functions from
-			// `kubedb.dev/mysql/hack/dev/examples/stash01_config.yaml`
+			// 2nd: create mysql related tasks and functions either
+			// 		from `kubedb.dev/mysql/hack/dev/examples/stash01_config.yaml`
+			//	 or	from helm chart in `stash.appscode.dev/mysql/chart/mysql-stash`
 			Context("With Stash/Restic", func() {
 				var bc *stashV1beta1.BackupConfiguration
 				var bs *stashV1beta1.BackupSession
@@ -1136,20 +1137,12 @@ var _ = Describe("MySQL", func() {
 					err := f.DeleteBackupConfiguration(bc.ObjectMeta)
 					Expect(err).NotTo(HaveOccurred())
 
-					By("Deleting BackupSession")
-					err = f.DeleteBackupSession(bs.ObjectMeta)
-					Expect(err).NotTo(HaveOccurred())
-
 					By("Deleting RestoreSession")
 					err = f.DeleteRestoreSession(rs.ObjectMeta)
 					Expect(err).NotTo(HaveOccurred())
 
 					By("Deleting Repository")
 					err = f.DeleteRepository(repo.ObjectMeta)
-					Expect(err).NotTo(HaveOccurred())
-
-					By("Deleting Stash RBACs")
-					err = f.DeleteStashMySQLRBAC(mysql.ObjectMeta)
 					Expect(err).NotTo(HaveOccurred())
 				})
 
@@ -1173,10 +1166,6 @@ var _ = Describe("MySQL", func() {
 				}
 
 				var shouldInitializeFromStash = func() {
-					By("Ensuring Stash RBACs")
-					err := f.EnsureStashMySQLRBAC(mysql.ObjectMeta)
-					Expect(err).NotTo(HaveOccurred())
-
 					// Create and wait for running MySQL
 					createAndWaitForRunning()
 
@@ -1201,9 +1190,8 @@ var _ = Describe("MySQL", func() {
 					err = f.CreateBackupConfiguration(bc)
 					Expect(err).NotTo(HaveOccurred())
 
-					By("Create BackupSession")
-					err = f.CreateBackupSession(bs)
-					Expect(err).NotTo(HaveOccurred())
+					By("Wait until BackupSession be created")
+					bs, err = f.WaitUntilBackkupSessionBeCreated(bc.ObjectMeta)
 
 					// eventually backupsession succeeded
 					By("Check for Succeeded backupsession")
@@ -1248,7 +1236,6 @@ var _ = Describe("MySQL", func() {
 						secret = f.SecretForGCSBackend()
 						secret = f.PatchSecretForRestic(secret)
 						bc = f.BackupConfiguration(mysql.ObjectMeta)
-						bs = f.BackupSession(mysql.ObjectMeta)
 						repo = f.Repository(mysql.ObjectMeta, secret.Name)
 
 						repo.Spec.Backend = store.Backend{
