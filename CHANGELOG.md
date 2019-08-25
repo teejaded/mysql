@@ -1,10 +1,31 @@
 # Change Log
 
-## [0.5.0](https://github.com/kubedb/mysql/tree/0.5.0) (2019-05-06)
+## [v0.6.0-rc.0](https://github.com/kubedb/mysql/tree/v0.6.0-rc.0) (2019-08-22)
+[Full Changelog](https://github.com/kubedb/mysql/compare/0.5.0...v0.6.0-rc.0)
+
+**Merged pull requests:**
+
+- Add e2e test commands to Makefile [\#162](https://github.com/kubedb/mysql/pull/162) ([the-redback](https://github.com/the-redback))
+-  Update test for gcs backup [\#161](https://github.com/kubedb/mysql/pull/161) ([shudipta](https://github.com/shudipta))
+- Update dependencies [\#160](https://github.com/kubedb/mysql/pull/160) ([tamalsaha](https://github.com/tamalsaha))
+- Don't set annotation to AppBinding [\#159](https://github.com/kubedb/mysql/pull/159) ([hossainemruz](https://github.com/hossainemruz))
+- Set database version in AppBinding [\#158](https://github.com/kubedb/mysql/pull/158) ([hossainemruz](https://github.com/hossainemruz))
+- Change package path to kubedb.dev/mysql [\#157](https://github.com/kubedb/mysql/pull/157) ([tamalsaha](https://github.com/tamalsaha))
+- Add license header to Makefiles [\#156](https://github.com/kubedb/mysql/pull/156) ([tamalsaha](https://github.com/tamalsaha))
+- Fix UpsertDatabaseAnnotation\(\) function [\#154](https://github.com/kubedb/mysql/pull/154) ([hossainemruz](https://github.com/hossainemruz))
+- Add install, uninstall and purge command in Makefile [\#153](https://github.com/kubedb/mysql/pull/153) ([hossainemruz](https://github.com/hossainemruz))
+- Add Makefile [\#152](https://github.com/kubedb/mysql/pull/152) ([tamalsaha](https://github.com/tamalsaha))
+- Pod Disruption Budget for MySQL  [\#150](https://github.com/kubedb/mysql/pull/150) ([iamrz1](https://github.com/iamrz1))
+- Handling resource ownership [\#149](https://github.com/kubedb/mysql/pull/149) ([iamrz1](https://github.com/iamrz1))
+- Integrate stash with MySQL [\#148](https://github.com/kubedb/mysql/pull/148) ([the-redback](https://github.com/the-redback))
+
+## [0.5.0](https://github.com/kubedb/mysql/tree/0.5.0) (2019-05-20)
 [Full Changelog](https://github.com/kubedb/mysql/compare/0.4.0...0.5.0)
 
 **Merged pull requests:**
 
+- Use explicit IP whitelist instead of automatic IP whitelist [\#151](https://github.com/kubedb/mysql/pull/151) ([shudipta](https://github.com/shudipta))
+- Update to k8s 1.14.0 client libraries using go.mod [\#147](https://github.com/kubedb/mysql/pull/147) ([tamalsaha](https://github.com/tamalsaha))
 - Mysql Group Replication tests [\#146](https://github.com/kubedb/mysql/pull/146) ([shudipta](https://github.com/shudipta))
 - Revendor dependencies [\#145](https://github.com/kubedb/mysql/pull/145) ([tamalsaha](https://github.com/tamalsaha))
 - Mysql Group Replication [\#144](https://github.com/kubedb/mysql/pull/144) ([shudipta](https://github.com/shudipta))
