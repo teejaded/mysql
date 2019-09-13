@@ -19,7 +19,7 @@ var (
 
 	// for proxysql integration
 	ProxySQLTest        = false
-	ProxySQLCatalogName = "5.7"
+	ProxySQLCatalogName = "2.0.4"
 )
 
 type Framework struct {
