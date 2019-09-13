@@ -9,6 +9,7 @@ import (
 	jsonTypes "github.com/appscode/go/encoding/json/types"
 	"github.com/appscode/go/types"
 	. "github.com/onsi/gomega"
+	appsv1 "k8s.io/api/apps/v1"
 	core "k8s.io/api/core/v1"
 	policy "k8s.io/api/policy/v1beta1"
 	kerr "k8s.io/apimachinery/pkg/api/errors"
@@ -39,7 +40,8 @@ func (f *Invocation) MySQL() *api.MySQL {
 			},
 		},
 		Spec: api.MySQLSpec{
-			Version: jsonTypes.StrYo(DBCatalogName),
+			Version:     jsonTypes.StrYo(DBCatalogName),
+			StorageType: api.StorageTypeDurable,
 			Storage: &core.PersistentVolumeClaimSpec{
 				Resources: core.ResourceRequirements{
 					Requests: core.ResourceList{
@@ -48,6 +50,10 @@ func (f *Invocation) MySQL() *api.MySQL {
 				},
 				StorageClassName: types.StringP(f.StorageClass),
 			},
+			UpdateStrategy: appsv1.StatefulSetUpdateStrategy{
+				Type: appsv1.RollingUpdateStatefulSetStrategyType,
+			},
+			TerminationPolicy: api.TerminationPolicyWipeOut,
 		},
 	}
 }
