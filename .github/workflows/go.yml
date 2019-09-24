@@ -42,6 +42,9 @@ jobs:
           make install
           echo ">>>>>>>>>>>> edit mysql version crd"
           kubectl patch -n demo mysqlversion/8.0 -p '{"spec":{"initContainer":{"image": "kubedb/busybox"}}}' --type="merge"
+          kubectl patch -n demo mysqlversion/8.0 -p '{"spec":{"db":{"image": "kubedb/mysql:8.0"}}}' --type="merge"
+          echo ">>>>>>>>>>>>> get resources"
+          kubectl get all --all-namespaces
           #       echo "KUBECONFIG=.kube/kind-config-kind" >> hack/config/.env
           #       cat hack/config/.env
           echo ">>>>>>>>>>> deploy a mysql database"
@@ -53,8 +56,6 @@ jobs:
           kubectl describe pod -n default my-mysql-0
           echo ">>>>>>>>>>>>> logs from db pod - 0'th"
           kubectl logs -f -n default my-mysql-0
-          echo ">>>>>>>>>>>>> get pods"
-          kubectl get all --all-namespaces
           #        export TEST_ARGS='--db-catalog=8.0 --storageclass=hostpath'
           #        make e2e-tests
           sleep 10
