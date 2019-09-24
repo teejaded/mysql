@@ -7,14 +7,59 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Set up Go 1.12
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.12
-      id: go
+      #    - name: Set up Go 1.12
+      #      uses: actions/setup-go@v1
+      #      with:
+      #        go-version: 1.12
+      #      id: go
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
 
-    - name: Build
-      run: make ci
+      #    - name: Build
+      #      run: make ci
+
+      - name: Clone Installer
+        run: |
+          cd ..
+          git clone https://github.com/kubedb/installer.git
+          cd installer
+          git checkout origin/proxysql-version
+
+      - uses: engineerd/setup-kind@v0.1.0
+
+      - name: Testing
+        run: |
+          export KUBECONFIG="$(kind get kubeconfig-path)"
+          kubectl cluster-info
+          echo ">>> delete KIND's default storageclass"
+          kubectl delete storageclass standard || true
+          echo ">>> deploy provisioner"
+          # kubectl create -f ${GITHUB_WORKSPACE}/hack/github/hostpath-provisioner.yaml -n kube-system
+          kubectl apply -f ${GITHUB_WORKSPACE}/hack/github/rancher-provisioner.yaml
+          kubectl get pods -n kube-system
+          export REGISTRY=alittleprogramming
+          make install
+          echo ">>>>>>>>>>>> edit mysql version crd"
+          kubectl patch -n demo mysqlversion/5.7-v2 -p '{"spec":{"initContainer":{"image": "kubedb/busybox"}}}' --type="merge"
+          #       echo "KUBECONFIG=.kube/kind-config-kind" >> hack/config/.env
+          #       cat hack/config/.env
+          echo ">>>>>>>>>>> deploy a mysql database"
+          kubectl create -f ${GITHUB_WORKSPACE}/hack/github/my-mysql.yaml
+          sleep 100
+          echo ">>>>>>>>>>>>> logs from provisioner pod"
+          kubectl logs -n local-path-storage -lapp=local-path-provisioner
+          echo ">>>>>>>>>>>>> describe db pod - 0'th"
+          kubectl describe pod -n default my-mysql-0
+          echo ">>>>>>>>>>>>> logs from db pod - 0'th"
+          kubectl logs -f -n default my-mysql-0
+          echo ">>>>>>>>>>>>> get pods"
+          kubectl get all --all-namespaces
+          #        export TEST_ARGS='--db-catalog=5.7-v2 --storageclass=hostpath'
+          #        make e2e-tests
+          sleep 10
+          echo ">>>>>>>>>>>>> logs from db pod - 0'th"
+          kubectl logs -f -n default my-mysql-0
+          kubectl get pods -n default
+          kubectl get pvc
+          kubectl get pv
