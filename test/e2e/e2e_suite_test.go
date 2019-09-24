@@ -2,6 +2,7 @@ package e2e_test
 
 import (
 	"flag"
+	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -28,6 +29,13 @@ import (
 
 var (
 	storageClass = "standard"
+	kubeconfigPath = func() string {
+		kubecfg := os.Getenv("KUBECONFIG")
+		if kubecfg != "" {
+			return kubecfg
+		}
+		return filepath.Join(homedir.HomeDir(), ".kube", "config")
+	}()
 )
 
 func init() {
@@ -59,11 +67,6 @@ func TestE2e(t *testing.T) {
 }
 
 var _ = BeforeSuite(func() {
-
-	userHome := homedir.HomeDir()
-
-	// Kubernetes config
-	kubeconfigPath := filepath.Join(userHome, ".kube/config")
 	By("Using kubeconfig from " + kubeconfigPath)
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
 	Expect(err).NotTo(HaveOccurred())

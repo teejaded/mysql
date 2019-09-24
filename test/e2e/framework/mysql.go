@@ -9,10 +9,8 @@ import (
 	jsonTypes "github.com/appscode/go/encoding/json/types"
 	"github.com/appscode/go/types"
 	. "github.com/onsi/gomega"
-	core "k8s.io/api/core/v1"
 	policy "k8s.io/api/policy/v1beta1"
 	kerr "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	meta_util "kmodules.xyz/client-go/meta"
@@ -40,14 +38,16 @@ func (f *Invocation) MySQL() *api.MySQL {
 		},
 		Spec: api.MySQLSpec{
 			Version: jsonTypes.StrYo(DBCatalogName),
-			Storage: &core.PersistentVolumeClaimSpec{
-				Resources: core.ResourceRequirements{
-					Requests: core.ResourceList{
-						core.ResourceStorage: resource.MustParse(DBPvcStorageSize),
-					},
-				},
-				StorageClassName: types.StringP(f.StorageClass),
-			},
+			StorageType: api.StorageTypeEphemeral,
+			//Storage: &core.PersistentVolumeClaimSpec{
+			//	Resources: core.ResourceRequirements{
+			//		Requests: core.ResourceList{
+			//			core.ResourceStorage: resource.MustParse(DBPvcStorageSize),
+			//		},
+			//	},
+			//	StorageClassName: types.StringP(f.StorageClass),
+			//},
+			TerminationPolicy: api.TerminationPolicyWipeOut,
 		},
 	}
 }
@@ -125,7 +125,7 @@ func (f *Framework) EventuallyMySQLRunning(meta metav1.ObjectMeta) GomegaAsyncAs
 			Expect(err).NotTo(HaveOccurred())
 			return mysql.Status.Phase == api.DatabasePhaseRunning
 		},
-		time.Minute*15,
+		time.Minute*6,
 		time.Second*5,
 	)
 }

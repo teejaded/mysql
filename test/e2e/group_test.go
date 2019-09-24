@@ -2,7 +2,6 @@ package e2e_test
 
 import (
 	"fmt"
-
 	"github.com/appscode/go/log"
 	"github.com/appscode/go/types"
 	. "github.com/onsi/ginkgo"
@@ -30,6 +29,10 @@ var _ = Describe("MySQL Group Replication Tests", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		By("Wait for Running mysql")
+		//time.Sleep(time.Minute*6)
+		//m, _ := f.GetMySQL(mysql.ObjectMeta)
+		//By("+++++++++++++++++++++ get the mysql status")
+		//fmt.Println("++++++++++++++++++++ ", m.Status)
 		f.EventuallyMySQLRunning(mysql.ObjectMeta).Should(BeTrue())
 
 		By("Wait for AppBinding to create")
@@ -131,7 +134,7 @@ var _ = Describe("MySQL Group Replication Tests", func() {
 			f.CleanWorkloadLeftOvers()
 		})
 
-		It("should be possible to create a basic 3 member group", func() {
+		FIt("should be possible to create a basic 3 member group", func() {
 			for i := 0; i < api.MySQLDefaultGroupSize; i++ {
 				By(fmt.Sprintf("Checking ONLINE member count from Pod '%s-%d'", mysql.Name, i))
 				f.EventuallyONLINEMembersCount(mysql.ObjectMeta, dbName, i).Should(Equal(api.MySQLDefaultGroupSize))

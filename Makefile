@@ -321,7 +321,7 @@ $(BUILD_DIRS):
 .PHONY: install
 install:
 	@cd ../installer; \
-	APPSCODE_ENV=dev KUBEDB_DOCKER_REGISTRY=$(REGISTRY) KUBEDB_OPERATOR_TAG=action-e2e_linux_amd64 KUBEDB_CATALOG=mysql ./deploy/kubedb.sh --operator-name=$(BIN)
+	APPSCODE_ENV=dev KUBEDB_DOCKER_REGISTRY=$(REGISTRY) KUBEDB_OPERATOR_TAG=action-e2e-tests_linux_amd64 KUBEDB_CATALOG=mysql ./deploy/kubedb.sh --operator-name=$(BIN)
     # APPSCODE_ENV=dev KUBEDB_DOCKER_REGISTRY=$(REGISTRY) KUBEDB_OPERATOR_TAG=$(TAG) KUBEDB_CATALOG=mysql ./deploy/kubedb.sh --operator-name=$(BIN)
 
 .PHONY: uninstall
