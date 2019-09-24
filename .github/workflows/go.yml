@@ -41,8 +41,7 @@ jobs:
           export REGISTRY=alittleprogramming
           make install
           echo ">>>>>>>>>>>> edit mysql version crd"
-          kubectl patch -n demo mysqlversion/8.0 -p '{"spec":{"initContainer":{"image": "kubedb/busybox"}}}' --type="merge"
-          kubectl patch -n demo mysqlversion/8.0 -p '{"spec":{"db":{"image": "kubedb/mysql:8.0"}}}' --type="merge"
+          kubectl patch -n demo mysqlversion/8.0-v2 -p '{"spec":{"initContainer":{"image": "kubedb/busybox"}}}' --type="merge"
           echo ">>>>>>>>>>>>> get resources"
           kubectl get all --all-namespaces
           #       echo "KUBECONFIG=.kube/kind-config-kind" >> hack/config/.env
