@@ -41,14 +41,36 @@ jobs:
           export REGISTRY=alittleprogramming
           make install
           echo ">>>>>>>>>>>> edit mysql version crd"
-          kubectl patch -n demo mysqlversion/8.0-v2 -p '{"spec":{"initContainer":{"image": "kubedb/busybox"}}}' --type="merge"
-          echo ">>>>>>>>>>>>> get resources"
-          kubectl get all --all-namespaces
+          kubectl patch -n demo mysqlversion/5.7-v2 -p '{"spec":{"initContainer":{"image": "kubedb/busybox"}}}' --type="merge"
           #       echo "KUBECONFIG=.kube/kind-config-kind" >> hack/config/.env
           #       cat hack/config/.env
           echo ">>>>>>>>>>> deploy a mysql database"
           kubectl create -f ${GITHUB_WORKSPACE}/hack/github/my-mysql.yaml
           sleep 100
+          echo ">>>>>>>>>>>>> get resources"
+          kubectl get all --all-namespaces
+          echo ">>>>>>>>>>>>> get db pod manifest - 0'th"
+          kubectl get pod -n default my-mysql-0 -o yaml
+          echo ">>>>>>>>>>>>> error logs from db pod"
+          for i in {100..0}; do
+            if ! error="$("kubectl exec -i -n default my-mysql-0 ls /etc/" 2>&1 >/dev/null)"; then
+              echo 'process in progress...'
+              sleep 1
+              continue
+            fi
+            echo ">>>>>>>> ls /etc/mysql"
+            kubectl exec -i -n default my-mysql-0 ls -lah /etc/mysql || true
+            echo ">>>>>>>> ls /var/lib"
+            kubectl exec -i -n default my-mysql-0 ls -lah /var/lib || true
+            echo ">>>>>>>> ls /var/lib/mysql"
+            kubectl exec -i -n default my-mysql-0 ls -lah /var/lib/mysql || true
+            echo ">>>>>>>> ls /var/run"
+            kubectl exec -i -n default my-mysql-0 ls -lah /var/run || true
+            echo ">>>>>>>> ls /var/run/mysql"
+            kubectl exec -i -n default my-mysql-0 ls -lah /var/run/mysql || true
+            kubectl exec -i -n default my-mysql-0  cat /var/log/mysql/error.log || true
+          done
+          # kubectl exec -i -n default my-mysql-0 -- cat /var/log/mysql/error.log
           echo ">>>>>>>>>>>>> logs from provisioner pod"
           kubectl logs -n local-path-storage -lapp=local-path-provisioner
           echo ">>>>>>>>>>>>> describe db pod - 0'th"
