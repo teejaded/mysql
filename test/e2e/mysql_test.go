@@ -45,6 +45,7 @@ var _ = Describe("MySQL", func() {
 	)
 
 	BeforeEach(func() {
+		Skip("Don't run these for now")
 		f = root.Invoke()
 		mysql = f.MySQL()
 		garbageMySQL = new(api.MySQLList)

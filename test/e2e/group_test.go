@@ -134,7 +134,7 @@ var _ = Describe("MySQL Group Replication Tests", func() {
 			f.CleanWorkloadLeftOvers()
 		})
 
-		FIt("should be possible to create a basic 3 member group", func() {
+		It("should be possible to create a basic 3 member group", func() {
 			for i := 0; i < api.MySQLDefaultGroupSize; i++ {
 				By(fmt.Sprintf("Checking ONLINE member count from Pod '%s-%d'", mysql.Name, i))
 				f.EventuallyONLINEMembersCount(mysql.ObjectMeta, dbName, i).Should(Equal(api.MySQLDefaultGroupSize))
@@ -290,7 +290,7 @@ var _ = Describe("MySQL Group Replication Tests", func() {
 	})
 
 	Context("PDB", func() {
-
+		//Skip("skip for now")
 		It("should run evictions successfully", func() {
 			// Create MySQL
 			By("Create and run MySQL Group with three replicas")
